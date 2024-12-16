@@ -87,6 +87,7 @@ class Protocol(Enum):
     GCS = "gcs", "For packages dynamically uploaded and managed by the GCS."
     CONDA = "conda", "For conda environments installed locally on each node."
     PIP = "pip", "For pip environments installed locally on each node."
+    UV = "uv", "For uv environments install locally on each node."
     HTTPS = "https", "Remote https path, assumes everything packed in one zip file."
     S3 = "s3", "Remote s3 path, assumes everything packed in one zip file."
     GS = "gs", "Remote google storage path, assumes everything packed in one zip file."
@@ -233,11 +234,11 @@ def parse_uri(pkg_uri: str) -> Tuple[Protocol, str]:
         )
 
     if protocol in Protocol.remote_protocols():
-        if pkg_uri.endswith(".whl"):
+        if uri.path.endswith(".whl"):
             # Don't modify the .whl filename. See
             # https://peps.python.org/pep-0427/#file-name-convention
             # for more information.
-            package_name = pkg_uri.split("/")[-1]
+            package_name = uri.path.split("/")[-1]
         else:
             package_name = f"{protocol.value}_{uri.netloc}{uri.path}"
 
